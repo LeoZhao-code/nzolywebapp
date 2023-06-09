@@ -1,0 +1,95 @@
+html,
+body {
+    height: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo img {
+    height: 40px;
+    margin-right: 10px;
+}
+
+/* Main Content */
+.hero {
+    background-image: url('../image/hero-image1.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content {
+    text-align: center;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f00;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.bottom_display {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+
+/* Footer */
+footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;
+}
+
+.footer-links li {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+}
+
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f00;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.back-button:hover {
+    background-color: #ff4d4d;
+}
+
+body {
+    background-image: url('../image/background.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.clearfix::after, .clearfix::before {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+a, button {
+    align-items: center;
+    display: flex;
+}

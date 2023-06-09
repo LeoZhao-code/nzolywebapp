@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Member
+{% endblock %}
+
+
+{% block body %}
+    <br>
+    <h4>Member List</h4>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="input-group">
+                    <input type="text" id="inputText" class="form-control" placeholder="Search" name="name_like">
+                    <button class="btn btn-primary" type="submit" onclick="submitForm()">
+                        <img class="px-1" src="../static/image/search.svg" alt="SVG Icon">Search
+                    </button>
+                    <a class="back-button" href={{ url_for('member_page') }}>Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container pt-3 pb-3">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">NO.</th>
+                <th scope="col">Name</th>
+                <th scope="col">TeamName</th>
+                <th scope="col">City</th>
+                <th scope="col">Birthday</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in range(1, memberlist|length + 1, 1) %}
+                <tr>
+                    <th scope="col">{{ i }}</th>
+                    <td><a class="nav-link" href="/events?memberid={{ memberlist[i-1][5] }}">{{ memberlist[i-1][0] }} {{ memberlist[i-1][1] }}
+                        <img src="../static/image/chevron-left.svg" alt="SVG Icon"></a></td>
+                    <td>{{ memberlist[i-1][2] }}</td>
+                    <td>{{ memberlist[i-1][3] }}</td>
+                    <td>{{ memberlist[i-1][4] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <h4> Events List</h4>
+    <div class="container p-3 pb-3">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th scope="col">NO.</th>
+                <th scope="col">Event Name</th>
+                <th scope="col">Sport</th>
+                <th scope="col">Team Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in range(0, eventlist|length, 1) %}
+                <tr>
+                    <th scope="col">{{ i + 1 }}</th>
+                    <td>{{ eventlist[i][1] }}</td>
+                    <td>{{ eventlist[i][2] }}</td>
+                    <td>{{ eventlist[i][3] }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}
+
+{% block myjs %}
+    <script>
+        function submitForm() {
+            const input = document.getElementById('inputText').value;
+            window.location.href = "{{ url_for('member_page') }}" + "?name_like=" + input;
+        }
+    </script>
+
+{% endblock %}

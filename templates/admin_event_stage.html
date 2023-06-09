@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Event Stage
+{% endblock %}
+
+
+{% block body %}
+    <br>
+    <h4>Event Stage List</h4>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-6 col-sm-8">
+                <div class="input-group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showLink()">
+                        <img class="px-1" src="../static/image/plus.svg" alt="SVG Icon">Add Event Stage
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="input-group">
+                    <input type="text" id="inputText" class="form-control" placeholder="Search" name="stage_like">
+                    <button class="btn btn-primary" type="submit" onclick="submitForm()">
+                        <img class="px-1" src="../static/image/search.svg" alt="SVG Icon">Search
+                    </button>
+                    <a class="back-button" href={{ url_for('admin_event_stage') }}>Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% if stagelist|length == 0 %}
+        <div class="pt-3 text-center pb-3">
+            <h4>No results found</h4>
+        </div>
+    {% else %}
+        <div class="container pt-3 pb-3">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">NO.</th>
+                    <th scope="col">Stage Name</th>
+                    <th scope="col">Event</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Stage Date</th>
+                    <th scope="col">Points To Qualify</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in range(1, stagelist|length + 1, 1) %}
+                    <tr>
+                        {% if page %}
+                            <th scope="col">{{ i + (page - 1) * 10 }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% else %}
+                            <th scope="col">{{ i }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% endif %}
+                        <td>{{ stagelist[i-1][1] }}</td>
+                        <td>{{ stagelist[i-1][2] }}</td>
+                        <td>{{ stagelist[i-1][5] }}</td>
+                        <td>{{ stagelist[i-1][4] }}</td>
+                        {% if stagelist[i-1][6] == 1 %}
+                            <td>{{ stagelist[i-1][7] }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if stagecount %}
+                        {% for i in range(stagecount) %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('admin_event_stage') }}?page={{ i + 1 }}">{{ i + 1 }}</a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="item">1</li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Event Stage Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="pt-3 pb-3">
+                        <div class="container w-75">
+                            <form action="/admin_event_stage" method="post" onsubmit="return validateForm()">
+                                <div class="form-group py-3">
+                                    <label for="stage_name">Stage Name:</label>
+                                    <input type="text" class="form-control" id="stage_name" name="stage_name" placeholder="Enter Stage Name" oninput="showSelectedContent()" required>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="event_name">Event Name:</label>
+                                    <select class="form-control col-1" id="event_name" name="event_name" required>
+                                        <option value="">-----Choose a Stage-----</option>
+                                        {% for i in eventlist %}
+                                            <option value={{ i[0] }}>{{ i[1] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="data_location">Location:</label>
+                                    <input type="text" class="form-control" id="data_location" name="data_location" placeholder="Enter Location" required>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="stage_date">Stage Date:</label>
+                                    <input type="date" class="form-control" id="stage_date" name="stage_date" min="1900-01-01" max="2024-12-31" required>
+                                </div>
+                                <div class="form-group py-3" id="points_display" style="display: none;">
+                                    <label for="points">Points To Qualify:</label>
+                                    <input type="text" class="form-control" id="points" name="points">
+                                </div>
+                                <input type="hidden" id="stageID" name="stageID" value="">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a class="btn btn-danger" id="delete_data" onclick="confirmDelete()">Delete</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block myjs %}
+
+    <script>
+        function submitForm() {
+            const input = document.getElementById('inputText').value;
+            window.location.href = "{{ url_for('admin_event_stage') }}" + "?stage_like=" + input;
+        }
+
+
+        const stage_name = document.getElementById('stage_name');
+        const event_name = document.getElementById('event_name');
+        const data_location = document.getElementById('data_location');
+        const stage_date = document.getElementById('stage_date');
+        const points = document.getElementById('points');
+        const stageID = document.getElementById('stageID');
+        const delete_data = document.getElementById('delete_data');
+        const dataList = JSON.parse('{{ stagelist|tojson }}');
+
+        let delete_id = '';
+        function openModal(Id) {
+            stage_name.value = dataList[Id][1];
+            event_name.value = dataList[Id][3];
+            data_location.value = dataList[Id][5];
+            stage_date.value = dataList[Id][4];
+            points.value = dataList[Id][7];
+            stageID.value = dataList[Id][0];
+            delete_id = dataList[Id][0];
+            delete_data.style.display = 'inline';
+            showSelectedContent()
+        }
+
+        function showLink() {
+            stage_name.value =  '';
+            event_name.value =  '';
+            data_location.value =    '';
+            stage_date.value =  '';
+            points.value =      '';
+            stageID.value =     '';
+            delete_data.style.display = 'none';
+        }
+
+
+        const points_display = document.getElementById('points_display');
+        function showSelectedContent() {
+            if (stage_name.value === 'Final') {
+                points_display.style.display = 'none';
+                points.required = false;
+            } else {
+                points_display.style.display = 'block';
+                points.required = true;
+            }
+        }
+        const modal = document.getElementById('exampleModal');
+        modal.addEventListener('shown.bs.modal', function () {
+        });
+
+        function confirmDelete() {
+            const result = confirm("You sure you want to delete it?");
+            if (result) {
+                window.location.href = "/admin_delete_stage?stageID=" + delete_id;
+            } else {
+
+            }
+        }
+
+
+
+
+        function validateForm() {
+            if (stage_name.value === '' || event_name.value === '' || data_location.value === '' || stage_date.value === '') {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+
+            return true;
+        }
+    </script>
+
+{% endblock %}

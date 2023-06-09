@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Team
+{% endblock %}
+
+
+{% block body %}
+    <br>
+    <h4>Team List</h4>
+    <div class="container">
+            <div class="row justify-content-end">
+                <div class="col-md-6 col-sm-8">
+                    <div class="input-group">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showLink()">
+                            <img class="px-1" src="../static/image/plus.svg" alt="SVG Icon">Add Team
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8">
+                    <div class="input-group">
+                        <input type="text" id="inputText" class="form-control" placeholder="Search" name="team_like">
+                        <button class="btn btn-primary" type="submit" onclick="submitForm()">
+                            <img class="px-1" src="../static/image/search.svg" alt="SVG Icon">Search
+                        </button>
+                        <a class="back-button" href={{ url_for('admin_team_page') }}>Back</a>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    {% if teamlist|length == 0 %}
+        <div class="pt-3 text-center pb-3">
+            <h4>No results found</h4>
+        </div>
+    {% else %}
+        <div class="container pt-3 pb-3">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">NO.</th>
+                    <th scope="col">Team Name</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in range(1, teamlist|length + 1, 1) %}
+                    <tr>
+                        {% if page %}
+                            <th scope="col">{{ i + (page - 1) * 10 }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% else %}
+                            <th scope="col">{{ i }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% endif %}
+                        <td>{{ teamlist[i-1][1] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if teamcount %}
+                        {% for i in range(teamcount) %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('admin_team_page') }}?page={{ i + 1 }}">{{ i + 1 }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="item">1</li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Team Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="pt-3 pb-3">
+                        <div class="container w-75">
+                            <form action="/admin_team" method="post" onsubmit="return validateForm()">
+                                <div class="form-group py-3">
+                                    <label for="teamName">Team Name:</label>
+                                    <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Enter Team Name" required>
+                                </div>
+                                <input type="hidden" id="teamID" name="teamID" value="">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a class="btn btn-danger" id="delete_data" onclick="confirmDelete()">Delete</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block myjs %}
+    <script>
+        function submitForm() {
+            const input = document.getElementById('inputText').value;
+            window.location.href = "{{ url_for('admin_team_page') }}" + "?team_like=" + input;
+        }
+
+
+        const modal = document.getElementById('exampleModal');
+        modal.addEventListener('shown.bs.modal', function () { });
+
+
+        const teamName = document.getElementById('teamName');
+        const teamID = document.getElementById('teamID');
+        const delete_data = document.getElementById('delete_data');
+        const dataList = JSON.parse('{{ teamlist|tojson }}');
+
+        let delete_id = '';
+        function openModal(personId) {
+            teamName.value = dataList[personId][1];
+            teamID.value  = dataList[personId][0];
+            delete_id = dataList[personId][0];
+            delete_data.style.display = 'inline';
+        }
+
+        function showLink(){
+            teamName.value = '';
+            teamID.value  = '';
+            delete_data.style.display = 'none';
+        }
+
+        function confirmDelete() {
+            const result = confirm("You sure you want to delete it?");
+            if (result) {
+                    window.location.href = "/admin_delete_team?teamID="+delete_id;
+            } else {
+
+            }
+        }
+
+        function validateForm() {
+            if (teamName.value === '') {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+
+            return true;
+        }
+    </script>
+{% endblock %}

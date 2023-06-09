@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Admin Home
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="container pt-5">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to System Overview</h1>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-md-6 card-container">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Number of existing members</h5>
+                            <p class="card-text">Number of people: {{ membercount }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 card-container">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming games</h5>
+                            {% if upcomingevent|length == 0 %}
+                                <div class="d-flex justify-content-center">
+                                    <p>no record yet</p>
+                                </div>
+                            {% else %}
+                                <table class="table table-hover">
+                                    <thead>
+                                    <tr class="table-secondary">
+                                        <th scope="col">Event Name</th>
+                                        <th scope="col">Stage Name</th>
+                                        <th scope="col">Location</th>
+                                        <th scope="col">Stage Date</th>
+                                    </tr>
+                                    </thead>
+                                    {% for i in range(upcomingevent|length) %}
+                                        <tbody>
+                                        <tr>
+                                            <td>{{ upcomingevent[i][0] }}</td>
+                                            <td>{{ upcomingevent[i][1] }}</td>
+                                            <td>{{ upcomingevent[i][2] }}</td>
+                                            <td>{{ upcomingevent[i][3] }}</td>
+                                        </tr>
+                                        </tbody>
+                                    {% endfor %}
+                                </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pt-5 pb-5">
+        <form class="search-form" action="/admin_search" method="post">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-8">
+                    <div class="input-group">
+                        <select class="form-select" name="search_type">
+                            <option value="member">Member</option>
+                            <option value="event">Event</option>
+                            <option value="event_stage">Event Stage</option>
+                            <option value="team">Team</option>
+                            <option value="event_stage_result">Event Stage Result</option>
+                        </select>
+                        <input type="text" class="form-control w-50" id="search_input" placeholder="Search" name="search_data" oninput="checkInput()">
+                        <button class="btn btn-primary" id="search_button" type="submit" disabled>Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+
+{% block myjs %}
+
+    <script>
+        function checkInput() {
+            const input = document.getElementById("search_input");
+            const button = document.getElementById("search_button");
+
+            if (input.value.trim() !== "") {
+                button.disabled = false;
+            } else {
+                button.disabled = true;
+            }
+        }
+    </script>
+
+{% endblock %}

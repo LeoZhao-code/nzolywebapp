@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Event Stage Result
+{% endblock %}
+
+{% block body %}
+    <br>
+    <h4>Event Stage Result List</h4>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-6 col-sm-8">
+                <div class="input-group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showLink()">
+                        <img class="px-1" src="../static/image/plus.svg" alt="SVG Icon">Add Score
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="input-group">
+                    <input type="text" id="inputText" class="form-control" placeholder="Search" name="result_like">
+                    <button class="btn btn-primary" type="submit" onclick="submitForm()">
+                        <img class="px-1" src="../static/image/search.svg" alt="SVG Icon">Search
+                    </button>
+                    <a class="back-button" href={{ url_for('admin_event_stage_result') }}>Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if resultlist|length == 0 %}
+        <div class="pt-3 text-center pb-3">
+            <h4>No results found</h4>
+        </div>
+    {% else %}
+        <div class="container pt-3 pb-3">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">NO.</th>
+                    <th scope="col">Member Name</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Stage Name</th>
+                    <th scope="col">Points Scored</th>
+                    <th scope="col">Position</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in range(1, resultlist|length + 1, 1) %}
+                    <tr>
+                        {% if page %}
+                            <th scope="col">{{ i + (page - 1) * 10 }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% else %}
+                            <th scope="col">{{ i }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% endif %}
+                        <td>{{ resultlist[i-1][5] }}</td>
+                        <td>{{ resultlist[i-1][1] }}</td>
+                        <td>{{ resultlist[i-1][2] }}</td>
+                        <td>{{ resultlist[i-1][4] }}</td>
+                        <td>{{ resultlist[i-1][7] }}</td>
+                        {% if resultlist[i-1][8] != None %}
+                            <td>{{ resultlist[i-1][8] }}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if resultcount %}
+                        {% for i in range(resultcount) %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('admin_event_stage_result') }}?page={{ i + 1 }}">{{ i + 1 }}</a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="item">1</li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Event Stage Result Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="pt-3 pb-3">
+                        <div class="container w-75">
+                            <form action="/admin_event_stage_result" method="post" onsubmit="return validateForm()">
+                                <div class="form-group py-3">
+                                    <label for="select1">Location:</label>
+                                    <select class="form-control col-1" id="select1" name="select1" onchange="updateSelect1()" required>
+                                        <option value="">-----Choose a Location-----</option>
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="select2">Event Name:</label>
+                                    <select class="form-control col-1" id="select2" name="select2" onchange="updateSelect2()" required>
+                                        <option value="">-----Choose a Event Name-----</option>
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="select3">Event Stage Name:</label>
+                                    <select class="form-control col-1" id="select3" name="select3" onchange="updateSelect3()" required>
+                                        <option value="">-----Choose a Event Stage-----</option>
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="select_member">Member Name:</label>
+                                    <select class="form-control col-1" id="select_member" name="select_member" required>
+                                        <option value="">-----Choose a member-----</option>
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="event_points">Points Scored:</label>
+                                    <input type="text" class="form-control" id="event_points" name="event_points">
+                                </div>
+                                <div class="form-group py-3" id="position_display" style="display: none;">
+                                    <label for="position">position:</label>
+                                    <input type="text" class="form-control" id="position" name="position">
+                                </div>
+                                <input type="hidden" id="resultID" name="resultID" value="">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a class="btn btn-danger" id="delete_data" onclick="confirmDelete()">Delete</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block myjs %}
+    <script>
+        function submitForm() {
+            const input = document.getElementById('inputText').value;
+            window.location.href = "{{ url_for('admin_event_stage_result') }}" + "?result_like=" + input;
+        }
+        console.log({{ resultlist|tojson }})
+        const dataList = JSON.parse('{{ resultlist|tojson }}');
+        const modal = document.getElementById('exampleModal');
+        modal.addEventListener('shown.bs.modal', function () {
+        });
+
+        const select1 = document.getElementById('select1');
+        const select2 = document.getElementById('select2');
+        const select3 = document.getElementById('select3');
+        const select_member = document.getElementById('select_member');
+        const event_points = document.getElementById('event_points');
+        const position_display = document.getElementById('position_display');
+        const position = document.getElementById('position');
+        const resultID = document.getElementById('resultID');
+        let delete_id = '';
+
+        const data = JSON.parse('{{ eventstagelist|tojson }}');
+        for (const key in data) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.text = key;
+            select1.appendChild(option);
+        }
+
+        function updateSelect1() {
+            select2.innerHTML = '';
+            const option1 = document.createElement('option');
+            option1.value = "";
+            option1.text = "-----Choose a Event Name-----";
+            select2.appendChild(option1);
+            select3.innerHTML = '';
+            const option2 = document.createElement('option');
+            option2.value = "";
+            option2.text = "-----Choose a Event Name-----";
+            select3.appendChild(option2);
+            for (const key1 in data[select1.value]) {
+                const option1 = document.createElement('option');
+                option1.value = key1;
+                option1.text = key1;
+                select2.appendChild(option1);
+            }
+        }
+        function updateSelect2() {
+            select3.innerHTML = '';
+            const option2 = document.createElement('option');
+            option2.value = "";
+            option2.text = "-----Choose a Event Name-----";
+            select3.appendChild(option2);
+            for (const key2 in data[select1.value][select2.value]) {
+                const option2 = document.createElement('option');
+                option2.value = data[select1.value][select2.value][key2]['StageID'];
+                option2.text = key2;
+                select3.appendChild(option2);
+            }
+        }
+        function updateSelect3() {
+            select_member.innerHTML = '';
+            const option3 = document.createElement('option');
+            option3.value = "";
+            option3.text = "-----Choose a Member Name-----";
+            select_member.appendChild(option3);
+            for (const key3 in data[select1.value][select2.value][select3.options[select3.selectedIndex].text]['MemberID']) {
+                const temp = data[select1.value][select2.value][select3.options[select3.selectedIndex].text]['MemberID'][key3]
+                const option3 = document.createElement('option');
+                option3.value = Object.values(temp);
+                option3.text = Object.keys(temp)[0];
+                select_member.appendChild(option3);
+            }
+
+            if (select3.options[select3.selectedIndex].text === 'Final'){
+                position_display.style.display = 'block';
+                position.required = true;
+            }else{
+                position_display.style.display = 'none';
+                position.required = false;
+            }
+        }
+
+        function openModal(Id) {
+            select1.value = dataList[Id][1];
+            updateSelect1()
+            select2.value = dataList[Id][2];
+            updateSelect2()
+            select3.value = dataList[Id][9];
+            updateSelect3()
+            select_member.value = dataList[Id][6];
+            event_points.value = dataList[Id][7];
+            position.value = dataList[Id][8];
+            resultID.value = dataList[Id][0];
+            delete_id = dataList[Id][0];
+            delete_data.style.display = 'inline';
+        }
+
+        function showLink() {
+            select1.value =    '';
+            select2.innerHTML = '';
+            const option1 = document.createElement('option');
+            option1.value = "";
+            option1.text = "-----Choose a Event Name-----";
+            select2.appendChild(option1);
+            select2.value =    '';
+            select3.innerHTML = '';
+            const option2 = document.createElement('option');
+            option2.value = "";
+            option2.text = "-----Choose a Event Name-----";
+            select3.appendChild(option2);
+            select_member.innerHTML = '';
+            const option3 = document.createElement('option');
+            option3.value = "";
+            option3.text = "-----Choose a Member Name-----";
+            select_member.appendChild(option3);
+            select3.value =    '';
+            select_member.value =  '';
+            event_points.value =      '';
+            position.value =      '';
+            resultID.value =     '';
+            delete_data.style.display = 'none';
+        }
+
+
+        function confirmDelete() {
+            const result = confirm("You sure you want to delete it?");
+            if (result) {
+                window.location.href = "/admin_delete_result?resultID=" + delete_id;
+            } else {
+
+            }
+        }
+
+        function validateForm() {
+            if (select1.value === '' || select2.value === '' || select3.value === '' || select_member.value === ''|| event_points.value === '') {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+    Event
+{% endblock %}
+
+
+{% block body %}
+    <br>
+    <h4>Event List</h4>
+    <div class="container">
+        <div class="row justify-content-end">
+            <div class="col-md-6 col-sm-8">
+                <div class="input-group">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showLink()">
+                        <img class="px-1" src="../static/image/plus.svg" alt="SVG Icon">Add Event
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <div class="input-group">
+                    <input type="text" id="inputText" class="form-control" placeholder="Search" name="event_like">
+                    <button class="btn btn-primary" type="submit" onclick="submitForm()">
+                        <img class="px-1" src="../static/image/search.svg" alt="SVG Icon">Search
+                    </button>
+                    <a class="back-button" href={{ url_for('admin_event_page') }}>Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if eventlist|length == 0 %}
+        <div class="pt-3 text-center pb-3">
+            <h4>No results found</h4>
+        </div>
+    {% else %}
+        <div class="container pt-3 pb-3">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">NO.</th>
+                    <th scope="col">Event Name</th>
+                    <th scope="col">Sport</th>
+                    <th scope="col">TeamName</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in range(1, eventlist|length + 1, 1) %}
+                    <tr>
+                        {% if page %}
+                            <th scope="col">{{ i + (page - 1) * 10 }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% else %}
+                            <th scope="col">{{ i }}
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal({{ i-1 }})">
+                                    <img src="../static/image/edit.svg" alt="SVG Icon">
+                                </button>
+                            </th>
+                        {% endif %}
+                        <td>{{ eventlist[i-1][1] }}</td>
+                        <td>{{ eventlist[i-1][2] }}</td>
+                        <td>{{ eventlist[i-1][3] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    {% if eventcount %}
+                        {% for i in range(eventcount) %}
+                            <li class="page-item"><a class="page-link" href="{{ url_for('admin_event_page') }}?page={{ i + 1 }}">{{ i + 1 }}</a></li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="item">1</li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Event Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="pt-3 pb-3">
+                        <div class="container w-75">
+                            <form action="/admin_event" method="post" onsubmit="return validateForm()">
+                                <div class="form-group py-3">
+                                    <label for="eventName">Event Name:</label>
+                                    <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name" required>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="sport">Sport:</label>
+                                    <input type="text" class="form-control" id="sport" name="sport" placeholder="Enter A Sport" required>
+                                </div>
+                                <div class="form-group py-3">
+                                    <label for="selectBox">Team Name:</label>
+                                    <select class="form-control col-1" id="selectBox" name="selectBox" required>
+                                        <option value="">-----Choose a team-----</option>
+                                        {% for i in teamlist %}
+                                            <option value={{ i[0] }}>{{ i[1] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <input type="hidden" id="EventID" name="EventID" value="">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                                <a class="btn btn-danger" id="delete_data" onclick="confirmDelete()">Delete</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+
+
+{% block myjs %}
+    <script>
+        function submitForm() {
+            const input = document.getElementById('inputText').value;
+            window.location.href = "{{ url_for('admin_event_page') }}" + "?event_like=" + input;
+        }
+
+
+        const modal = document.getElementById('exampleModal');
+        modal.addEventListener('shown.bs.modal', function () { });
+
+
+        const eventName = document.getElementById('eventName');
+        const sport = document.getElementById('sport');
+        const selectBox = document.getElementById('selectBox');
+        const EventID = document.getElementById('EventID');
+        const delete_data = document.getElementById('delete_data');
+        const dataList = JSON.parse('{{ eventlist|tojson }}');
+
+        let delete_id = '';
+        function openModal(Id) {
+            eventName.value = dataList[Id][1];
+            sport.value  = dataList[Id][2];
+            selectBox.value = dataList[Id][4];
+            EventID.value  = dataList[Id][0];
+            delete_id = dataList[Id][0];
+            delete_data.style.display = 'inline';
+        }
+        function showLink(){
+            eventName.value = '';
+            sport.value  = '';
+            selectBox.value = '';
+            EventID.value  = '';
+            delete_data.style.display = 'none';
+        }
+
+
+        function confirmDelete() {
+            const result = confirm("You sure you want to delete it?");
+            if (result) {
+                    window.location.href = "/admin_delete_event?eventID="+delete_id;
+            } else {
+
+            }
+        }
+
+
+        function validateForm() {
+            if (eventName.value === '' || sport.value === '' || selectBox.value === '') {
+                alert('Please fill in all fields.');
+                return false;
+            }
+
+
+            return true;
+        }
+    </script>
+
+
+
+{% endblock %}
