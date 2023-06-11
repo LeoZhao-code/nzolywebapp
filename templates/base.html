@@ -13,21 +13,39 @@
     <div class="container-fluid navbar logo">
         <div class="container pt-3">
             <img src="../static/image/Logo.png" alt="Olympic Committee Logo">
-            <h2>NZ Winter Olympics Member System</h2>
+            <h2>NZ Winter Olympics System</h2>
         </div>
     </div>
     <div class="nav nav-tabs container pt-2" id="nav-tab" role="tablist">
         {% if not adminflag %}
-            <a class="nav-link {{ 'active' if showid == 1 else '' }}" style="width: auto" href={{ url_for('admin_page') }}><img class="px-1" src="../static/image/home.svg" alt="SVG Icon">Home</a>
-            <a class="nav-link {{ 'active' if showid == 2 else '' }}" style="width: auto" href={{ url_for('admin_member_page') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Member Page</a>
-            <a class="nav-link {{ 'active' if showid == 3 else '' }}" style="width: auto" href={{ url_for('admin_event_page') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Event Page</a>
-            <a class="nav-link {{ 'active' if showid == 4 else '' }}" style="width: auto" href={{ url_for('admin_event_stage') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Event Stage</a>
-            <a class="nav-link {{ 'active' if showid == 5 else '' }}" style="width: auto" href={{ url_for('admin_team_page') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Team Page</a>
-            <a class="nav-link {{ 'active' if showid == 6 else '' }}" style="width: auto" href={{ url_for('admin_event_stage_result') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Event Stage Result</a>
-            <a class="nav-link {{ 'active' if showid == 7 else '' }}" style="width: auto" href={{ url_for('admin_following_reports') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Following Reports</a>
+            <a class="nav-link {{ 'active' if showid == 1 else '' }}" style="width: auto" href={{ url_for('admin_page') }}>
+                <img class="px-1" src="../static/image/home.svg" alt="SVG Icon">
+                Home</a>
+            <a class="nav-link {{ 'active' if showid == 2 else '' }}" style="width: auto" href={{ url_for('admin_member_page') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Member Page</a>
+            <a class="nav-link {{ 'active' if showid == 3 else '' }}" style="width: auto" href={{ url_for('admin_event_page') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Event Page</a>
+            <a class="nav-link {{ 'active' if showid == 4 else '' }}" style="width: auto" href={{ url_for('admin_event_stage') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Event Stage</a>
+            <a class="nav-link {{ 'active' if showid == 5 else '' }}" style="width: auto" href={{ url_for('admin_team_page') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Team Page</a>
+            <a class="nav-link {{ 'active' if showid == 6 else '' }}" style="width: auto" href={{ url_for('admin_event_stage_result') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Event Stage Result</a>
+            <a class="nav-link {{ 'active' if showid == 7 else '' }}" style="width: auto" href={{ url_for('admin_following_reports') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Following Reports</a>
         {% else %}
-            <a class="nav-link {{ 'active' if showid == 1 else '' }}" style="width: auto" href={{ url_for('home_page') }}><img class="px-1" src="../static/image/home.svg" alt="SVG Icon">Home</a>
-            <a class="nav-link {{ 'active' if showid == 2 else '' }}" style="width: auto" href={{ url_for('member_page') }}><img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">Member</a>
+            <a class="nav-link {{ 'active' if showid == 1 else '' }}" style="width: auto" href={{ url_for('home_page') }}>
+                <img class="px-1" src="../static/image/home.svg" alt="SVG Icon">
+                Home</a>
+            <a class="nav-link {{ 'active' if showid == 2 else '' }}" style="width: auto" href={{ url_for('member_page') }}>
+                <img class="px-1" src="../static/image/bookmark.svg" alt="SVG Icon">
+                Member</a>
         {% endif %}
     </div>
 </nav>
@@ -45,7 +63,11 @@
     <footer>
         <nav>
             <ul class="footer-links">
-                <li><a class="px-2" href="https://github.com/LeoZhao-code/nzolywebapp"><img class="px-1" src="../static/image/github.svg" alt="SVG Icon">Github Page</a></li>
+                <li>
+                    <a class="px-2" href="https://github.com/LeoZhao-code/nzolywebapp">
+                        <img class="px-1" src="../static/image/github.svg" alt="SVG Icon">
+                        Github Page</a>
+                </li>
             </ul>
         </nav>
         <p>&copy; 2023 Olympic Committee. All rights reserved.</p>

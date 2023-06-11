@@ -23,8 +23,8 @@
         </div>
     </div>
     <div class="container pt-3 pb-3">
-        <table class="table table-hover">
-            <thead>
+        <table class="table table-striped table-hover">
+            <thead class="table-secondary">
             <tr>
                 <th scope="col">NO.</th>
                 <th scope="col">Name</th>
@@ -37,7 +37,8 @@
             {% for i in range(1, memberlist|length + 1, 1) %}
                 <tr>
                     <th scope="col">{{ i }}</th>
-                    <td><a class="nav-link" href="/events?memberid={{ memberlist[i-1][5] }}">{{ memberlist[i-1][0] }} {{ memberlist[i-1][1] }}
+                    <td><a class="nav-link" href="/events?memberid={{ memberlist[i-1][5] }}">
+                        {{ memberlist[i-1][0] }} {{ memberlist[i-1][1] }}
                         <img src="../static/image/chevron-left.svg" alt="SVG Icon"></a></td>
                     <td>{{ memberlist[i-1][2] }}</td>
                     <td>{{ memberlist[i-1][3] }}</td>
@@ -50,8 +51,8 @@
     <br>
     <h4> Events List</h4>
     <div class="container p-3 pb-3">
-        <table class="table table-hover">
-            <thead>
+        <table class="table table-striped table-hover">
+            <thead class="table-secondary">
             <tr>
                 <th scope="col">NO.</th>
                 <th scope="col">Event Name</th>

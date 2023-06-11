@@ -36,8 +36,8 @@
         </div>
     {% else %}
         <div class="container pt-3 pb-3">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
                 <tr>
                     <th scope="col">NO.</th>
                     <th scope="col">Event Name</th>
@@ -137,10 +137,8 @@
             window.location.href = "{{ url_for('admin_event_page') }}" + "?event_like=" + input;
         }
 
-
         const modal = document.getElementById('exampleModal');
         modal.addEventListener('shown.bs.modal', function () { });
-
 
         const eventName = document.getElementById('eventName');
         const sport = document.getElementById('sport');
@@ -148,41 +146,37 @@
         const EventID = document.getElementById('EventID');
         const delete_data = document.getElementById('delete_data');
         const dataList = JSON.parse('{{ eventlist|tojson }}');
-
         let delete_id = '';
+
         function openModal(Id) {
             eventName.value = dataList[Id][1];
-            sport.value  = dataList[Id][2];
+            sport.value = dataList[Id][2];
             selectBox.value = dataList[Id][4];
-            EventID.value  = dataList[Id][0];
+            EventID.value = dataList[Id][0];
             delete_id = dataList[Id][0];
             delete_data.style.display = 'inline';
         }
-        function showLink(){
+
+        function showLink() {
             eventName.value = '';
-            sport.value  = '';
+            sport.value = '';
             selectBox.value = '';
-            EventID.value  = '';
+            EventID.value = '';
             delete_data.style.display = 'none';
         }
-
 
         function confirmDelete() {
             const result = confirm("You sure you want to delete it?");
             if (result) {
-                    window.location.href = "/admin_delete_event?eventID="+delete_id;
-            } else {
-
+                window.location.href = "/admin_delete_event?eventID=" + delete_id;
             }
         }
-
 
         function validateForm() {
             if (eventName.value === '' || sport.value === '' || selectBox.value === '') {
                 alert('Please fill in all fields.');
                 return false;
             }
-
 
             return true;
         }

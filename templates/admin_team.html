@@ -7,6 +7,7 @@
 
 
 {% block body %}
+
     <br>
     <h4>Team List</h4>
     <div class="container">
@@ -36,8 +37,8 @@
         </div>
     {% else %}
         <div class="container pt-3 pb-3">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
                 <tr>
                     <th scope="col">NO.</th>
                     <th scope="col">Team Name</th>
@@ -118,36 +119,32 @@
             window.location.href = "{{ url_for('admin_team_page') }}" + "?team_like=" + input;
         }
 
-
         const modal = document.getElementById('exampleModal');
         modal.addEventListener('shown.bs.modal', function () { });
-
 
         const teamName = document.getElementById('teamName');
         const teamID = document.getElementById('teamID');
         const delete_data = document.getElementById('delete_data');
         const dataList = JSON.parse('{{ teamlist|tojson }}');
-
         let delete_id = '';
+
         function openModal(personId) {
             teamName.value = dataList[personId][1];
-            teamID.value  = dataList[personId][0];
+            teamID.value = dataList[personId][0];
             delete_id = dataList[personId][0];
             delete_data.style.display = 'inline';
         }
 
-        function showLink(){
+        function showLink() {
             teamName.value = '';
-            teamID.value  = '';
+            teamID.value = '';
             delete_data.style.display = 'none';
         }
 
         function confirmDelete() {
             const result = confirm("You sure you want to delete it?");
             if (result) {
-                    window.location.href = "/admin_delete_team?teamID="+delete_id;
-            } else {
-
+                window.location.href = "/admin_delete_team?teamID=" + delete_id;
             }
         }
 

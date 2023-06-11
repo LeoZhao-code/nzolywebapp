@@ -13,7 +13,7 @@
                 <div class="col-md-6 card-container">
                     <div class="card custom-card">
                         <div class="card-body">
-                            <table class="table table-striped table-hover caption-top">
+                            <table class="table table-striped caption-top">
                                 <caption>Number of Gold, Silver and Bronze Medals and who has won them.</caption>
                                 <thead class="table-secondary">
                                 <tr>
@@ -40,7 +40,7 @@
                 <div class="col-md-6 card-container">
                     <div class="card custom-card">
                         <div class="card-body">
-                            <table class="table table-striped table-hover caption-top">
+                            <table class="table table-striped caption-top">
                                 <caption>Members listed grouped into teams, with members ordered by last name then first name within each team.</caption>
                                 <thead class="table-secondary">
                                 <tr>
@@ -52,7 +52,9 @@
                                 <tbody>
                                 {% for i in teammember %}
                                     <tr>
-                                        <td>{{ i[1] }}</td>
+                                        {% if i[4] != 0 %}
+                                            <td rowspan={{ i[4] }}>{{ i[1] }}</td>
+                                        {% endif %}
                                         <td>{{ i[2] }}</td>
                                         <td>{{ i[3] }}</td>
                                     </tr>
@@ -65,7 +67,6 @@
             </div>
         </div>
     </div>
-
 
 {% endblock %}
 

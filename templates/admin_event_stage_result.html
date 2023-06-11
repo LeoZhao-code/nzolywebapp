@@ -35,8 +35,8 @@
         </div>
     {% else %}
         <div class="container pt-3 pb-3">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
                 <tr>
                     <th scope="col">NO.</th>
                     <th scope="col">Member Name</th>
@@ -105,6 +105,15 @@
                         <div class="container w-75">
                             <form action="/admin_event_stage_result" method="post" onsubmit="return validateForm()">
                                 <div class="form-group py-3">
+                                    <label for="select_member">Member Name:</label>
+                                    <select class="form-control col-1" id="select_member" name="select_member" required>
+                                        <option value="">-----Choose a member-----</option>
+                                        {% for i in memberlist %}
+                                            <option value="{{ i[0] }}">{{ i[1] }} {{ i[2] }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group py-3">
                                     <label for="select1">Location:</label>
                                     <select class="form-control col-1" id="select1" name="select1" onchange="updateSelect1()" required>
                                         <option value="">-----Choose a Location-----</option>
@@ -120,12 +129,6 @@
                                     <label for="select3">Event Stage Name:</label>
                                     <select class="form-control col-1" id="select3" name="select3" onchange="updateSelect3()" required>
                                         <option value="">-----Choose a Event Stage-----</option>
-                                    </select>
-                                </div>
-                                <div class="form-group py-3">
-                                    <label for="select_member">Member Name:</label>
-                                    <select class="form-control col-1" id="select_member" name="select_member" required>
-                                        <option value="">-----Choose a member-----</option>
                                     </select>
                                 </div>
                                 <div class="form-group py-3">
@@ -159,24 +162,22 @@
             const input = document.getElementById('inputText').value;
             window.location.href = "{{ url_for('admin_event_stage_result') }}" + "?result_like=" + input;
         }
-        console.log({{ resultlist|tojson }})
+
         const dataList = JSON.parse('{{ resultlist|tojson }}');
         const modal = document.getElementById('exampleModal');
-        modal.addEventListener('shown.bs.modal', function () {
-        });
+        modal.addEventListener('shown.bs.modal', function () { });
 
+        const select_member = document.getElementById('select_member');
         const select1 = document.getElementById('select1');
         const select2 = document.getElementById('select2');
         const select3 = document.getElementById('select3');
-        const select_member = document.getElementById('select_member');
         const event_points = document.getElementById('event_points');
         const position_display = document.getElementById('position_display');
         const position = document.getElementById('position');
         const resultID = document.getElementById('resultID');
         let delete_id = '';
-
-        const data = JSON.parse('{{ eventstagelist|tojson }}');
-        for (const key in data) {
+        const detail_data = JSON.parse('{{ eventstagelist|tojson }}');
+        for (const key in detail_data) {
             const option = document.createElement('option');
             option.value = key;
             option.text = key;
@@ -184,67 +185,44 @@
         }
 
         function updateSelect1() {
-            select2.innerHTML = '';
-            const option1 = document.createElement('option');
-            option1.value = "";
-            option1.text = "-----Choose a Event Name-----";
-            select2.appendChild(option1);
-            select3.innerHTML = '';
-            const option2 = document.createElement('option');
-            option2.value = "";
-            option2.text = "-----Choose a Event Name-----";
-            select3.appendChild(option2);
-            for (const key1 in data[select1.value]) {
-                const option1 = document.createElement('option');
-                option1.value = key1;
-                option1.text = key1;
-                select2.appendChild(option1);
-            }
-        }
-        function updateSelect2() {
-            select3.innerHTML = '';
-            const option2 = document.createElement('option');
-            option2.value = "";
-            option2.text = "-----Choose a Event Name-----";
-            select3.appendChild(option2);
-            for (const key2 in data[select1.value][select2.value]) {
+            select2.innerHTML = '<option value="">-----Choose a Event Name-----</option>';
+            select3.innerHTML = '<option value="">-----Choose a Event Stage-----</option>';
+            for (const key2 in detail_data[select1.value]) {
                 const option2 = document.createElement('option');
-                option2.value = data[select1.value][select2.value][key2]['StageID'];
+                option2.value = key2;
                 option2.text = key2;
-                select3.appendChild(option2);
+                select2.appendChild(option2);
             }
         }
-        function updateSelect3() {
-            select_member.innerHTML = '';
-            const option3 = document.createElement('option');
-            option3.value = "";
-            option3.text = "-----Choose a Member Name-----";
-            select_member.appendChild(option3);
-            for (const key3 in data[select1.value][select2.value][select3.options[select3.selectedIndex].text]['MemberID']) {
-                const temp = data[select1.value][select2.value][select3.options[select3.selectedIndex].text]['MemberID'][key3]
-                const option3 = document.createElement('option');
-                option3.value = Object.values(temp);
-                option3.text = Object.keys(temp)[0];
-                select_member.appendChild(option3);
-            }
 
-            if (select3.options[select3.selectedIndex].text === 'Final'){
+        function updateSelect2() {
+            select3.innerHTML = '<option value="">-----Choose a Event Stage-----</option>';
+            for (const key3 in detail_data[select1.value][select2.value]) {
+                const option3 = document.createElement('option');
+                option3.value = detail_data[select1.value][select2.value][key3];
+                option3.text = key3;
+                select3.appendChild(option3);
+            }
+        }
+
+        function updateSelect3() {
+            if (select3.options[select3.selectedIndex].text === 'Final') {
                 position_display.style.display = 'block';
                 position.required = true;
-            }else{
+            } else {
                 position_display.style.display = 'none';
                 position.required = false;
             }
         }
 
         function openModal(Id) {
+            select_member.value = dataList[Id][6];
             select1.value = dataList[Id][1];
             updateSelect1()
             select2.value = dataList[Id][2];
             updateSelect2()
             select3.value = dataList[Id][9];
             updateSelect3()
-            select_member.value = dataList[Id][6];
             event_points.value = dataList[Id][7];
             position.value = dataList[Id][8];
             resultID.value = dataList[Id][0];
@@ -253,43 +231,25 @@
         }
 
         function showLink() {
-            select1.value =    '';
-            select2.innerHTML = '';
-            const option1 = document.createElement('option');
-            option1.value = "";
-            option1.text = "-----Choose a Event Name-----";
-            select2.appendChild(option1);
-            select2.value =    '';
-            select3.innerHTML = '';
-            const option2 = document.createElement('option');
-            option2.value = "";
-            option2.text = "-----Choose a Event Name-----";
-            select3.appendChild(option2);
-            select_member.innerHTML = '';
-            const option3 = document.createElement('option');
-            option3.value = "";
-            option3.text = "-----Choose a Member Name-----";
-            select_member.appendChild(option3);
-            select3.value =    '';
-            select_member.value =  '';
-            event_points.value =      '';
-            position.value =      '';
-            resultID.value =     '';
+            select1.value = '';
+            select2.value = '';
+            select3.value = '';
+            select_member.value = '';
+            event_points.value = '';
+            position.value = '';
+            resultID.value = '';
             delete_data.style.display = 'none';
         }
-
 
         function confirmDelete() {
             const result = confirm("You sure you want to delete it?");
             if (result) {
                 window.location.href = "/admin_delete_result?resultID=" + delete_id;
-            } else {
-
             }
         }
 
         function validateForm() {
-            if (select1.value === '' || select2.value === '' || select3.value === '' || select_member.value === ''|| event_points.value === '') {
+            if (select1.value === '' || select2.value === '' || select3.value === '' || select_member.value === '' || event_points.value === '') {
                 alert('Please fill in all fields.');
                 return false;
             }

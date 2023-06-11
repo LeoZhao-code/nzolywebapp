@@ -37,8 +37,8 @@
         </div>
     {% else %}
         <div class="container pt-3 pb-3">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
                 <tr>
                     <th scope="col">NO.</th>
                     <th scope="col">Stage Name</th>
@@ -154,7 +154,6 @@
             window.location.href = "{{ url_for('admin_event_stage') }}" + "?stage_like=" + input;
         }
 
-
         const stage_name = document.getElementById('stage_name');
         const event_name = document.getElementById('event_name');
         const data_location = document.getElementById('data_location');
@@ -163,8 +162,8 @@
         const stageID = document.getElementById('stageID');
         const delete_data = document.getElementById('delete_data');
         const dataList = JSON.parse('{{ stagelist|tojson }}');
-
         let delete_id = '';
+
         function openModal(Id) {
             stage_name.value = dataList[Id][1];
             event_name.value = dataList[Id][3];
@@ -178,17 +177,17 @@
         }
 
         function showLink() {
-            stage_name.value =  '';
-            event_name.value =  '';
-            data_location.value =    '';
-            stage_date.value =  '';
-            points.value =      '';
-            stageID.value =     '';
+            stage_name.value = '';
+            event_name.value = '';
+            data_location.value = '';
+            stage_date.value = '';
+            points.value = '';
+            stageID.value = '';
             delete_data.style.display = 'none';
         }
 
-
         const points_display = document.getElementById('points_display');
+
         function showSelectedContent() {
             if (stage_name.value === 'Final') {
                 points_display.style.display = 'none';
@@ -198,20 +197,16 @@
                 points.required = true;
             }
         }
+
         const modal = document.getElementById('exampleModal');
-        modal.addEventListener('shown.bs.modal', function () {
-        });
+        modal.addEventListener('shown.bs.modal', function () { });
 
         function confirmDelete() {
             const result = confirm("You sure you want to delete it?");
             if (result) {
                 window.location.href = "/admin_delete_stage?stageID=" + delete_id;
-            } else {
-
             }
         }
-
-
 
 
         function validateForm() {

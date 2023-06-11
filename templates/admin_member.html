@@ -7,6 +7,7 @@
 
 
 {% block body %}
+
     <br>
     <h4>Member List</h4>
     <div class="container">
@@ -36,8 +37,8 @@
         </div>
     {% else %}
         <div class="container pt-3 pb-3">
-            <table class="table table-hover">
-                <thead>
+            <table class="table table-striped table-hover">
+                <thead class="table-secondary">
                 <tr>
                     <th scope="col">NO.</th>
                     <th scope="col">Name</th>
@@ -84,8 +85,6 @@
             </nav>
         </div>
     {% endif %}
-
-
 
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -139,7 +138,6 @@
     </div>
 
 
-
 {% endblock %}
 
 {% block myjs %}
@@ -149,10 +147,8 @@
             window.location.href = "{{ url_for('admin_member_page') }}" + "?name_like=" + input;
         }
 
-
         const modal = document.getElementById('exampleModal');
         modal.addEventListener('shown.bs.modal', function () { });
-
 
         const firstName = document.getElementById('firstName');
         const lastName = document.getElementById('lastName');
@@ -162,35 +158,33 @@
         const memberID = document.getElementById('memberID');
         const delete_data = document.getElementById('delete_data');
         const dataList = JSON.parse('{{ memberlist|tojson }}');
-
         let delete_id = '';
+
         function openModal(personId) {
-            firstName.value = dataList[personId][1];
-            lastName.value  = dataList[personId][2];
-            selectBox.value = dataList[personId][7];
-            city.value      = dataList[personId][4];
-            birthdate.value = dataList[personId][5];
-            memberID.value  = dataList[personId][6];
-            delete_id = dataList[personId][6];
+            firstName.value = dataList[personId][0];
+            lastName.value = dataList[personId][1];
+            selectBox.value = dataList[personId][6];
+            city.value = dataList[personId][3];
+            birthdate.value = dataList[personId][4];
+            memberID.value = dataList[personId][5];
+            delete_id = dataList[personId][5];
             delete_data.style.display = 'inline';
         }
-        function showLink(){
+
+        function showLink() {
             firstName.value = '';
-            lastName.value  = '';
+            lastName.value = '';
             selectBox.value = '';
-            city.value      = '';
+            city.value = '';
             birthdate.value = '';
-            memberID.value  = '';
+            memberID.value = '';
             delete_data.style.display = 'none';
         }
-
 
         function confirmDelete() {
             const result = confirm("You sure you want to delete it?");
             if (result) {
-                    window.location.href = "/admin_delete_member?memberID="+delete_id;
-            } else {
-
+                window.location.href = "/admin_delete_member?memberID=" + delete_id;
             }
         }
 
