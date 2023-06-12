@@ -108,3 +108,17 @@ Modify the content of the `Add Event` button accordingly.
 - Update the SQL query statement in the `member_page()` function to include a filtering function.
 - Modify the SQL query, add new statements, and make necessary modifications in the `events_page()` function.
 
+
+---
+
+
+## Note：
+
+ - There is a non-team member (Nico Porteous) participating in other team projects in the database, 
+ so the event stage result interface in the current project can add any member to participate in any existing project.
+
+ - Under normal circumstances, members of the team only participate in the projects of the team, 
+ and it is difficult to generate Upcoming Events & Stages without adding other tables. 
+ - To modify the event stage result interface of this project, 
+ each member can only participate in the competition of his own team, 
+ and have to add condition restrictions on the basis of the current project
