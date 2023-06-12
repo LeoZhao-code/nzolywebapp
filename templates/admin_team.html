@@ -90,7 +90,7 @@
                 <div class="modal-body">
                     <div class="pt-3 pb-3">
                         <div class="container w-75">
-                            <form action="/admin_team" method="post" onsubmit="return validateForm()">
+                            <form action="/admin_team" method="post" id="myForm">
                                 <div class="form-group py-3">
                                     <label for="teamName">Team Name:</label>
                                     <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Enter Team Name" required>
@@ -148,14 +148,15 @@
             }
         }
 
-        function validateForm() {
-            if (teamName.value === '') {
-                alert('Please fill in all fields.');
-                return false;
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const pattern = /^[a-zA-Z0-9,.]+$/;
+            if (!pattern.test(teamName.value)) {
+                alert('Only enter numbers and letters in Team Name');
+            }else {
+                form.submit();
             }
-
-
-            return true;
-        }
+        });
     </script>
 {% endblock %}

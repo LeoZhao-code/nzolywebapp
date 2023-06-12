@@ -93,7 +93,7 @@
                 <div class="modal-body">
                     <div class="pt-3 pb-3">
                         <div class="container w-75">
-                            <form action="/admin_event" method="post" onsubmit="return validateForm()">
+                            <form action="/admin_event" method="post" id="myForm">
                                 <div class="form-group py-3">
                                     <label for="eventName">Event Name:</label>
                                     <input type="text" class="form-control" id="eventName" name="eventName" placeholder="Enter Event Name" required>
@@ -172,14 +172,20 @@
             }
         }
 
-        function validateForm() {
-            if (eventName.value === '' || sport.value === '' || selectBox.value === '') {
-                alert('Please fill in all fields.');
-                return false;
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const pattern = /^[a-zA-Z0-9,.]+$/;
+            if (!pattern.test(eventName.value)) {
+                alert('Only enter numbers and letters in Event Name');
             }
-
-            return true;
-        }
+            else if (!pattern.test(sport.value)) {
+                alert('Only enter numbers and letters in Sport');
+            }
+            else {
+                form.submit();
+            }
+        });
     </script>
 
 

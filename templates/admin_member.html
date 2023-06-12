@@ -97,7 +97,7 @@
                 <div class="modal-body">
                     <div class="pt-3 pb-3">
                         <div class="container w-75">
-                            <form action="/admin_member" method="post" onsubmit="return validateForm()">
+                            <form action="/admin_member" method="post" id="myForm">
                                 <div class="form-group py-3">
                                     <label for="firstName">First Name:</label>
                                     <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" required>
@@ -188,15 +188,20 @@
             }
         }
 
-        function validateForm() {
-            if (firstName.value === '' || lastName.value === '' || selectBox.value === '' || city.value === '' || birthdate.value === '') {
-                alert('Please fill in all fields.');
-                return false;
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const pattern = /^[a-zA-Z,.]+$/;
+            if (!pattern.test(firstName.value)) {
+                alert('Only enter letters in First Name');
+            }else if (!pattern.test(lastName.value)) {
+                alert('Only enter letters in Last Name');
+            }else if (!pattern.test(city.value)) {
+                alert('Only enter letters in City');
+            }else {
+                form.submit();
             }
-
-
-            return true;
-        }
+        });
     </script>
 
 

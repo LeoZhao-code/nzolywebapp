@@ -42,6 +42,12 @@ def member_page():
     The interface displays a list of members, including their personal information.
     Each member's name can be clicked for further details.
     Additionally, there is a search function that allows for searching all information within the member list.
+
+    Args:
+        name_like (str): Get search data.
+        member_list (list): A list of all member information.
+        event_list (list): A list of all event information.
+
     :return: member.html
     """
     sql_data = get_cursor()
@@ -73,6 +79,13 @@ def member_page():
 def events_page():
     """
     Presenting the historical data of current members and providing information about upcoming competitions.
+
+    Args:
+        member_id (str): Get search data.
+        previous_result (list): A list of previous result information.
+        upcoming_event (list): A list of upcoming event information.
+        member_name (list) : Current member name.
+
     :return: events.html
     """
     member_id = request.args.get("memberid")
@@ -88,6 +101,7 @@ def events_page():
                 ORDER BY e.EventName;"""
     sql_data.execute(sql, (member_id,))
     previous_result = sql_data.fetchall()
+    # Format the data
     if previous_result:
         previous_result = [list(item) for item in previous_result]
         temp = previous_result[0][2]
@@ -105,6 +119,7 @@ def events_page():
                 ORDER BY e.EventName;"""
     sql_data.execute(sql, (member_id,))
     upcoming_event = sql_data.fetchall()
+    # Format the data
     if upcoming_event:
         upcoming_event = [list(item) for item in upcoming_event]
         temp = upcoming_event[0][1]
@@ -126,6 +141,11 @@ def admin_page():
     """
     Administrator's main interface displaying the current member count and upcoming matches.
     Modify the options preceding the search box to specify the desired content to be searched.
+
+    Args:
+        member_count (str) : Current member count.
+        upcoming_event (list): A list of upcoming event information.
+
     :return: admin_home.html
     """
     sql_data = get_cursor()
@@ -147,6 +167,11 @@ def admin_page():
 def search_page():
     """
     A dedicated area designed for receiving search data on the admin page and navigating to their respective interfaces.
+
+    Args:
+        search_type (str) : Type of search.
+        search_data (str): Data searched.
+
     :return: None
     """
     search_type = request.form.get('search_type')
@@ -169,6 +194,14 @@ def search_page():
 def admin_member_page():
     """
     Including the addition, deletion, modification and query of member information
+
+    Args:
+        member_count (int) : Current member count.
+        page (int) : The number of pages currently viewed.
+        name_like (str): Get search data.
+        member_list (list): Member information of the current page.
+        team_list (list) : A list of all team information.
+
     :return: admin_member.html
     """
     sql_data = get_cursor()
@@ -237,6 +270,10 @@ def admin_member_page():
 def admin_delete_member():
     """
     Database information for deleting a member's record.
+
+    Args:
+        member_id (str): Get delete data.
+
     :return: None
     """
     member_id = request.args.get('memberID')
@@ -252,6 +289,14 @@ def admin_delete_member():
 def admin_event_page():
     """
     Including adding, deleting, modifying and querying event page information
+
+    Args:
+        event_count (int) : Current event count.
+        page (int) : The number of pages currently viewed.
+        event_like (str): Get search data.
+        event_list (list): Event information of the current page.
+        team_list (list) : A list of all team information.
+
     :return: admin_event.html
     """
     sql_data = get_cursor()
@@ -315,6 +360,10 @@ def admin_event_page():
 def admin_delete_event():
     """
     Database information for deleting an event's record.
+
+    Args:
+        event_id (str): Get delete data.
+
     :return: None
     """
     event_id = request.args.get('eventID')
@@ -330,6 +379,14 @@ def admin_delete_event():
 def admin_event_stage():
     """
     Including adding, deleting, modifying and querying event stage page information
+
+    Args:
+        stage_count (int) : Current event stage count.
+        page (int) : The number of pages currently viewed.
+        stage_like (str): Get search data.
+        stage_list (list): Event stage information of the current page.
+        event_list (list) : A list of all event information.
+
     :return: admin_event_stage.html
     """
     sql_data = get_cursor()
@@ -379,6 +436,7 @@ def admin_event_stage():
         stage_date = request.form.get('stage_date')
         points = request.form.get('points')
         stage_id = request.form.get('stageID')
+        # Process data
         if stage_name == 'Final':
             qualifying = 0
             points = None
@@ -404,12 +462,16 @@ def admin_event_stage():
 def admin_delete_stage():
     """
     Database information for deleting an event stage's record.
+
+    Args:
+        stage_id (str): Get delete data.
+
     :return: None
     """
-    team_id = request.args.get('stageID')
+    stage_id = request.args.get('stageID')
     sql_data = get_cursor()
     sql = """DELETE FROM event_stage WHERE StageID = %s;"""
-    sql_data.execute(sql, (team_id,))
+    sql_data.execute(sql, (stage_id,))
     detail = sql_data.fetchall()
     sql_data.close()
     return redirect(url_for('admin_event_stage'))
@@ -419,6 +481,14 @@ def admin_delete_stage():
 def admin_team_page():
     """
     Including adding, deleting, modifying and querying team page information
+
+    Args:
+        team_count (int) : Current team count.
+        page (int) : The number of pages currently viewed.
+        team_like (str): Get search data.
+        stage_list (list): Event stage information of the current page.
+        event_list (list) : A list of all event information.
+
     :return: admin_team.html
     """
     sql_data = get_cursor()
@@ -468,6 +538,10 @@ def admin_team_page():
 def admin_delete_team():
     """
     Database information for deleting a team's record.
+
+    Args:
+        team_id (str): Get delete data.
+
     :return: None
     """
     team_id = request.args.get('teamID')
@@ -483,6 +557,16 @@ def admin_delete_team():
 def admin_event_stage_result():
     """
     Including adding, deleting, modifying and querying event stage result page information
+
+    Args:
+        result_count (int) : Current event stage result count.
+        event_stage_list (list) : Get entry information.
+        temp (dictionary) : Temporary variables.
+        page (int) : The number of pages currently viewed.
+        result_like (str): Get search data.
+        member_list (list): A list of all member information.
+        result_list (list) : A list of all event stage result information.
+
     :return: admin_event_stage_result.html
     """
     sql_data = get_cursor()
@@ -496,14 +580,15 @@ def admin_event_stage_result():
                 LEFT JOIN `events` AS e ON e.EventID = es.EventID;"""
     sql_data.execute(sql)
     event_stage_list = sql_data.fetchall()
-    nested_data = {}
+    # Convert data into dictionaries with hierarchical relationships
+    temp = {}
     for stage_id, event_name, location, stage_name in event_stage_list:
-        if location not in nested_data:
-            nested_data[location] = {}
-        if event_name not in nested_data[location]:
-            nested_data[location][event_name] = {}
-        nested_data[location][event_name][stage_name] = stage_id
-    event_stage_list = nested_data
+        if location not in temp:
+            temp[location] = {}
+        if event_name not in temp[location]:
+            temp[location][event_name] = {}
+        temp[location][event_name][stage_name] = stage_id
+    event_stage_list = temp
     sql = """SELECT m.MemberID, m.FirstName, m.LastName FROM members AS m;"""
     sql_data.execute(sql)
     member_list = sql_data.fetchall()
@@ -568,6 +653,10 @@ def admin_event_stage_result():
 def admin_delete_result():
     """
     Database information for deleting an event stage result's record.
+
+    Args:
+        result_id (str): Get delete data.
+
     :return: None
     """
     result_id = request.args.get('resultID')
@@ -584,6 +673,13 @@ def admin_following_reports():
     """
     On one side, the interface displays the count and total number of gold, silver, and bronze medals.
     On the other side, it presents a sorted list of members.
+
+    Args:
+        medals (list): Get data for each medal each person has won.
+        result (list): Calculate the total number of each medal.
+        temp (list) : Temporary variables.
+        team_member (list) : Get team and member information.
+
     :return: admin_following_reports.html
     """
     sql_data = get_cursor()
@@ -596,6 +692,7 @@ def admin_following_reports():
                 GROUP BY m.FirstName, m.LastName;"""
     sql_data.execute(sql)
     medals = sql_data.fetchall()
+    # Calculate the total number of each medal
     result = []
     goldTotal = silverTotal = bronzeTotal = 0
     for firstName, lastName, goldMedals, silverMedals, bronzeMedals in medals:
@@ -626,7 +723,6 @@ def admin_following_reports():
                 count = sum(1 for item in team_member if item[0] == team_member[i][0])
                 temp = team_member[i][1]
                 team_member[i][-1] = count
-    print(team_member)
     sql_data.close()
     return render_template("admin_following_reports.html", result=result, teammember=team_member, showid=7)
 

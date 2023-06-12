@@ -103,7 +103,7 @@
                 <div class="modal-body">
                     <div class="pt-3 pb-3">
                         <div class="container w-75">
-                            <form action="/admin_event_stage_result" method="post" onsubmit="return validateForm()">
+                            <form action="/admin_event_stage_result" method="post" id="myForm">
                                 <div class="form-group py-3">
                                     <label for="select_member">Member Name:</label>
                                     <select class="form-control col-1" id="select_member" name="select_member" required>
@@ -133,10 +133,10 @@
                                 </div>
                                 <div class="form-group py-3">
                                     <label for="event_points">Points Scored:</label>
-                                    <input type="text" class="form-control" id="event_points" name="event_points">
+                                    <input type="text" class="form-control" id="event_points" name="event_points" required>
                                 </div>
                                 <div class="form-group py-3" id="position_display" style="display: none;">
-                                    <label for="position">position:</label>
+                                    <label for="position">Position:</label>
                                     <input type="text" class="form-control" id="position" name="position">
                                 </div>
                                 <input type="hidden" id="resultID" name="resultID" value="">
@@ -248,13 +248,21 @@
             }
         }
 
-        function validateForm() {
-            if (select1.value === '' || select2.value === '' || select3.value === '' || select_member.value === '' || event_points.value === '') {
-                alert('Please fill in all fields.');
-                return false;
+        const form = document.getElementById('myForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const number = /^[0-9.]+$/;
+            if (!number.test(event_points.value)) {
+                alert('Only enter numbers in Points Scored');
+            }else if(!number.test(position.value)){
+                if (select3.options[select3.selectedIndex].text === 'Final') {
+                    alert('Only enter numbers in Position');
+                }else{
+                    form.submit();
+                }
+            }else {
+                form.submit();
             }
-
-            return true;
-        }
+        });
     </script>
 {% endblock %}
